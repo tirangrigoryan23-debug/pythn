@@ -1,3 +1,6 @@
+import random
+
+
 def is_possible_to_create_word(letters, word):
     for c in word:
         if c not in letters:
@@ -5,47 +8,64 @@ def is_possible_to_create_word(letters, word):
     return True
 
 
-word = "napastak"
-max_lives = 6
-lives = max_lives
-letters = []
+words = [
+    "napastak",
+    "python",
+    "computer",
+    "programming",
+    "keyboard",
+    "monitor"
+]
 
 print("🎮 Welcome to Hangman")
-print("Type letters to guess the word")
-print("Type 'quit' to exit\n")
 
-while lives > 0 and not is_possible_to_create_word(letters, word):
-    print("\nWord: ", end="")
-    for c in word:
-        if c in letters:
-            print(c, end=" ")
-        else:
-            print("_", end=" ")
+while True:  # 🔁 GAME RESTART LOOP
+    word = random.choice(words)
+    max_lives = 6
+    lives = max_lives
+    letters = []
 
-    print(f"\nLives: {'❤️' * lives}{'🖤' * (max_lives - lives)}")
+    print("\nType letters to guess the word")
+    print("Type 'quit' to exit\n")
 
-    letter = input("Enter a letter: ").strip().lower()
+    while lives > 0 and not is_possible_to_create_word(letters, word):
+        print("\nWord: ", end="")
+        for c in word:
+            if c in letters:
+                print(c, end=" ")
+            else:
+                print("_", end=" ")
 
-    if letter == "quit":
-        print("👋 Game exited")
+        print(f"\nLives: {'❤️' * lives}{'🖤' * (max_lives - lives)}")
+
+        letter = input("Enter a letter: ").strip().lower()
+
+        if letter == "quit":
+            print("👋 Game exited")
+            exit()
+
+        if len(letter) != 1 or not letter.isalpha():
+            print("⚠️ Please enter ONE letter only")
+            continue
+
+        if letter in letters:
+            print("⚠️ You already used this letter")
+            continue
+
+        letters.append(letter)
+
+        if letter not in word:
+            lives -= 1
+            print("❌ Wrong letter!")
+
+    # ---- GAME RESULT ----
+    if is_possible_to_create_word(letters, word):
+        print(f"\n🎉 You WON! The word was '{word}'")
+    else:
+        print(f"\n💀 You LOST! The word was '{word}'")
+
+    # ---- RESTART QUESTION ----
+    answer = input("\nDo you want to play again? (y/n): ").strip().lower()
+    if answer != "y":
+        print("👋 Thanks for playing!")
         break
-
-    if len(letter) != 1 or not letter.isalpha():
-        print("⚠️ Please enter ONE letter only")
-        continue
-
-    if letter in letters:
-        print("⚠️ You already used this letter")
-        continue
-
-    letters.append(letter)
-
-    if letter not in word:
-        lives -= 1
-        print("❌ Wrong letter!")
-
-# ---- GAME RESULT ----
-if is_possible_to_create_word(letters, word):
-    print(f"\n🎉 You WON! The word was '{word}'")
-elif lives == 0:
-    print(f"\n💀 You LOST! The word was '{word}'")
